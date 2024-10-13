@@ -1,0 +1,15 @@
+name: XMultiVersion
+main: KnosTx\XMultiVersion\Main
+version: 1.0.0
+api: 5.0.0
+load: POSTWORLD
+description: "Multi-version plugin for Minecraft 1.20.x - 1.21.30"
+commands:
+  xmultiversion:
+    description: "Command for XMultiVersion plugin"
+    usage: "/xmultiversion"
+    permission: xmultiversion.use
+permissions:
+  xmultiversion.use:
+    description: "Allows usage of XMultiVersion command"
+    default: true
