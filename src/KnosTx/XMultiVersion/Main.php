@@ -57,7 +57,7 @@ class Main extends PluginBase implements Listener {
         $packet = $event->getPacket();
         if ($packet instanceof LoginPacket) {
             $playerProtocol = $packet->protocol;
-            $playerName = $player->getName;
+            $playerName = $player->username;
 
             $this->logPlayerInfo($playerName, $playerProtocol);
 
