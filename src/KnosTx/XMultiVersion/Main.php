@@ -21,7 +21,7 @@ class Main extends PluginBase implements Listener {
     private PlayerFunction $playerFunction;
 
     public function __construct() {
-        $playerFunction = $this->playerFunction;
+        $playerFunction = $this->playerFunction();
     }
     public function onEnable() : void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
@@ -62,7 +62,7 @@ class Main extends PluginBase implements Listener {
         $packet = $event->getPacket();
         if ($packet instanceof LoginPacket) {
             $playerProtocol = $packet->protocol;
-            $playerName = $this->playerFunction->getUsername;
+            $playerName = $this->playerFunction->getUsername();
 
             $this->logPlayerInfo($playerName, $playerProtocol);
 
