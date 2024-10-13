@@ -2,6 +2,7 @@
 
 namespace KnosTx\XMultiVersion;
 
+use KnosTx\XMultiVersion\player\PlayerFunction;
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 use pocketmine\command\Command;
@@ -53,11 +54,11 @@ class Main extends PluginBase implements Listener {
         return $this->isCompatibleVersion() ? "Supported" : "Not fully compatible";
     }
 
-    protected function onDataPacketReceive(DataPacketReceiveEvent $event, Player $player) : void {
+    protected function onDataPacketReceive(DataPacketReceiveEvent $event, Player $player, PlayerFuction $playerFunction) : void {
         $packet = $event->getPacket();
         if ($packet instanceof LoginPacket) {
             $playerProtocol = $packet->protocol;
-            $playerName = $player->username;
+            $playerName = $playerFunction->getUsername;
 
             $this->logPlayerInfo($playerName, $playerProtocol);
 
