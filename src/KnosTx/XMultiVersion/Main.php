@@ -54,7 +54,7 @@ class Main extends PluginBase implements Listener {
         return $this->isCompatibleVersion() ? "Supported" : "Not fully compatible";
     }
 
-    protected function onDataPacketReceive(DataPacketReceiveEvent $event, Player $player, PlayerFuction $playerFunction) : void {
+    private function onDataPacketReceive(DataPacketReceiveEvent $event, Player $player, PlayerFunction $playerFunction) : void {
         $packet = $event->getPacket();
         if ($packet instanceof LoginPacket) {
             $playerProtocol = $packet->protocol;
