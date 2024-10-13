@@ -64,7 +64,7 @@ class Main extends PluginBase implements Listener {
             if (!$this->isProtocolSupported($playerProtocol)) {
                 $event->getOrigin()->disconnect("Your client version is not supported by this server. Please update your game.");
             } else {
-                $event->getOrigin()->sendMessage("Welcome, $playerName! You are using protocol version $playerProtocol.");
+                $player->sendMessage("Welcome, $playerName! You are using protocol version $playerProtocol.");
             }
         }
     }
