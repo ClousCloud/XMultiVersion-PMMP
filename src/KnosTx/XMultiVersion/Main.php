@@ -10,34 +10,29 @@ use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\network\mcpe\protocol\LoginPacket;
+use pocketmine\utils\Config;
 
 class Main extends PluginBase implements Listener {
 
     private string $serverVersion;
+    private array $supportedProtocols = [685, 686, 700, 710, 720, 729];
+    private Config $playerData;
 
     public function onEnable(): void {
-        // Register event listeners
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-
-        // Determine server version
         $this->serverVersion = $this->getServer()->getPocketMineVersion();
 
-        // Ensure compatibility
+        $this->playerData = new Config($this->getDataFolder() . "playerData.yml", Config::YAML);
+
         if (!$this->isCompatibleVersion()) {
-            $this->getLogger()->warning("Warning: Server version $this->serverVersion may not be fully compatible.");
+            $this->getLogger()->warning("Warning: Server version $this->serverVersion may not be fully compatible with XMultiVersion.");
         }
     }
 
-    /**
-     * Check if the server version is within the supported range.
-     */
     private function isCompatibleVersion(): bool {
         return version_compare($this->serverVersion, "1.20.0", ">=") && version_compare($this->serverVersion, "1.21.30", "<=");
     }
 
-    /**
-     * Handle /xmultiversion command
-     */
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
         if ($command->getName() === "xmultiversion") {
             if ($sender instanceof Player) {
@@ -45,7 +40,6 @@ class Main extends PluginBase implements Listener {
                     $sender->sendMessage(TextFormat::RED . "You don't have permission to use this command.");
                     return false;
                 }
-
                 $sender->sendMessage(TextFormat::GREEN . "XMultiVersion Plugin is active. Server version compatibility: " . $this->getCompatibilityStatus());
             } else {
                 $sender->sendMessage(TextFormat::RED . "This command can only be used in-game.");
@@ -55,39 +49,39 @@ class Main extends PluginBase implements Listener {
         return false;
     }
 
-    /**
-     * Provide a message regarding the server's compatibility status.
-     */
     private function getCompatibilityStatus(): string {
-        if ($this->isCompatibleVersion()) {
-            return "Supported";
-        } else {
-            return "Not fully compatible";
-        }
+        return $this->isCompatibleVersion() ? "Supported" : "Not fully compatible";
     }
 
-    /**
-     * Prevent players from connecting if the version is not compatible.
-     */
     public function onDataPacketReceive(DataPacketReceiveEvent $event): void {
         $packet = $event->getPacket();
         if ($packet instanceof LoginPacket) {
-            $playerVersion = $packet->protocol;
-            
-            // Allow only compatible versions to join
-            if (!$this->isPlayerVersionCompatible($playerVersion)) {
-                $event->getOrigin()->disconnect("Your client version is not supported by this server.");
+            $playerProtocol = $packet->protocol;
+            $playerName = $packet->username;
+
+            $this->logPlayerInfo($playerName, $playerProtocol);
+
+            if (!$this->isProtocolSupported($playerProtocol)) {
+                $event->getOrigin()->disconnect("Your client version is not supported by this server. Please update your game.");
+            } else {
+                $event->getOrigin()->sendMessage("Welcome, $playerName! You are using protocol version $playerProtocol.");
             }
         }
     }
 
-    /**
-     * Determine player compatibility based on protocol version.
-     */
-    private function isPlayerVersionCompatible(int $protocolVersion): bool {
-        // Define protocol version range for 1.20.x - 1.21.30
-        $minProtocol = 685; // Protocol for 1.20.0
-        $maxProtocol = 729; // Protocol for 1.21.30
-        return $protocolVersion >= $minProtocol && $protocolVersion <= $maxProtocol;
+    private function isProtocolSupported(int $protocol): bool {
+        return in_array($protocol, $this->supportedProtocols, true);
+    }
+
+    private function logPlayerInfo(string $playerName, int $protocol): void {
+        $this->playerData->set($playerName, [
+            "protocol" => $protocol,
+            "last_login" => date("Y-m-d H:i:s")
+        ]);
+        $this->playerData->save();
+    }
+
+    public function onDisable(): void {
+        $this->playerData->save();
     }
 }
