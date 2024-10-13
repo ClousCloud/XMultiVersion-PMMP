@@ -15,7 +15,7 @@ use pocketmine\utils\Config;
 class Main extends PluginBase implements Listener {
 
     private string $serverVersion;
-    private array $supportedProtocols = [649, 664, 685, 686, 712, 729];
+    private array $supportedProtocols = [649, 662, 685, 686, 712, 729];
     private Config $playerData;
 
     public function onEnable(): void {
