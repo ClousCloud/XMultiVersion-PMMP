@@ -21,7 +21,7 @@ class Main extends PluginBase implements Listener {
     private PlayerFunction $playerFunction;
 
     public function __construct() {
-        $playerFunction = $this->playerFunction();
+        $this->playerFunction = new PlayerFunction();
     }
     public function onEnable() : void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
