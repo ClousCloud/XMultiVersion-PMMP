@@ -18,7 +18,11 @@ class Main extends PluginBase implements Listener {
     private string $serverVersion;
     private array $supportedProtocols = [649, 662, 685, 686, 712, 729];
     private Config $playerData;
+    private PlayerFunction $playerFunction;
 
+    public function __construct() {
+        $playerFunction = $this->playerFunction;
+    }
     public function onEnable() : void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->serverVersion = $this->getServer()->getPocketMineVersion();
@@ -58,7 +62,7 @@ class Main extends PluginBase implements Listener {
         $packet = $event->getPacket();
         if ($packet instanceof LoginPacket) {
             $playerProtocol = $packet->protocol;
-            $playerName = $playerFunction->getUsername;
+            $playerName = $this->playerFunction->getUsername;
 
             $this->logPlayerInfo($playerName, $playerProtocol);
 
