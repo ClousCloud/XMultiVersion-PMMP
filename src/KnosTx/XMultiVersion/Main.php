@@ -20,9 +20,11 @@ class Main extends PluginBase implements Listener {
     private Config $playerData;
     private PlayerFunction $playerFunction;
 
-    public function __construct() {
+    public function __construct($loader, $server, $description, $dataFolder, $file, $resourceProvider) {
+        parent::__construct($loader, $server, $description, $dataFolder, $file, $resourceProvider);
         $this->playerFunction = new PlayerFunction();
     }
+
     public function onEnable() : void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->serverVersion = $this->getServer()->getPocketMineVersion();
