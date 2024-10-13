@@ -1,6 +1,6 @@
 <?php
 
-namespace KnosTx\XMultiVersion;
+namespace KnosTx\XMultiVersion\player;
 
 use pocketmine\player\Player;
 
