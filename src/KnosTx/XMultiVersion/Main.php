@@ -18,7 +18,7 @@ class Main extends PluginBase implements Listener {
     private array $supportedProtocols = [649, 662, 685, 686, 712, 729];
     private Config $playerData;
 
-    public function onEnable(): void {
+    public function onEnable() : void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->serverVersion = $this->getServer()->getPocketMineVersion();
 
@@ -29,7 +29,7 @@ class Main extends PluginBase implements Listener {
         }
     }
 
-    private function isCompatibleVersion(): bool {
+    private function isCompatibleVersion() : bool {
         return version_compare($this->serverVersion, "1.20.0", ">=") && version_compare($this->serverVersion, "1.21.30", "<=");
     }
 
@@ -49,15 +49,15 @@ class Main extends PluginBase implements Listener {
         return false;
     }
 
-    private function getCompatibilityStatus(): string {
+    private function getCompatibilityStatus() : string {
         return $this->isCompatibleVersion() ? "Supported" : "Not fully compatible";
     }
 
-    public function onDataPacketReceive(DataPacketReceiveEvent $event): void {
+    public function onDataPacketReceive(DataPacketReceiveEvent $event, Player $player) : void {
         $packet = $event->getPacket();
         if ($packet instanceof LoginPacket) {
             $playerProtocol = $packet->protocol;
-            $playerName = $packet->username;
+            $playerName = $player->getName;
 
             $this->logPlayerInfo($playerName, $playerProtocol);
 
@@ -69,11 +69,11 @@ class Main extends PluginBase implements Listener {
         }
     }
 
-    private function isProtocolSupported(int $protocol): bool {
+    private function isProtocolSupported(int $protocol) : bool {
         return in_array($protocol, $this->supportedProtocols, true);
     }
 
-    private function logPlayerInfo(string $playerName, int $protocol): void {
+    private function logPlayerInfo(string $playerName, int $protocol) : void {
         $this->playerData->set($playerName, [
             "protocol" => $protocol,
             "last_login" => date("Y-m-d H:i:s")
@@ -81,7 +81,7 @@ class Main extends PluginBase implements Listener {
         $this->playerData->save();
     }
 
-    public function onDisable(): void {
+    public function onDisable() : void {
         $this->playerData->save();
     }
 }
